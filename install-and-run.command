@@ -1,6 +1,6 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────
-# Zillow Scraper — One-click installer & runner for macOS
+# Zillow Scraper — One-click installer for macOS
 #
 # Tell your coworkers to open Terminal and paste this one-liner:
 #
@@ -11,13 +11,13 @@
 # ⚠️  SET YOUR REPO URL HERE
 REPO_URL="https://github.com/cjtlabs/zillow-agents-scraper.git"
 
-INSTALL_DIR="$HOME/zillow-agents-scraper"
+INSTALL_DIR="$HOME/Desktop/zillow-agents-scraper"
 
 set -e
 
 echo ""
 echo "======================================"
-echo "  Zillow Agent Scraper — Setup & Run"
+echo "  Zillow Agent Scraper — Setup"
 echo "======================================"
 echo ""
 
@@ -78,35 +78,10 @@ echo "======================================"
 echo "  Setup complete!"
 echo "======================================"
 echo ""
-
-# ── Step 8: Prompt for cities ─────────────────────────────────────
-echo "Enter the cities you want to scrape, separated by spaces."
-echo "Format: city-name-state (e.g. los-angeles-ca beverly-hills-ca)"
+echo "To run the scraper, open a terminal and run:"
 echo ""
-echo "Common examples:"
-echo "  los-angeles-ca"
-echo "  beverly-hills-ca"
-echo "  pasadena-ca"
-echo "  burbank-ca"
-echo "  santa-monica-ca"
+echo "  cd $INSTALL_DIR && pnpm start <city-name-state>"
 echo ""
-read -rp "Cities (or press Enter for los-angeles-ca): " CITIES_INPUT
-
-if [[ -z "$CITIES_INPUT" ]]; then
-  CITIES_INPUT="los-angeles-ca"
-fi
-
+echo "Example:"
+echo "  cd $INSTALL_DIR && pnpm start los-angeles-ca"
 echo ""
-echo "[scraper] Running with cities: $CITIES_INPUT"
-echo ""
-
-# ── Step 9: Run ───────────────────────────────────────────────────
-pnpm start $CITIES_INPUT
-
-echo ""
-echo "======================================"
-echo "  Done! Results saved to:"
-echo "  $INSTALL_DIR/output/agents.json"
-echo "======================================"
-echo ""
-read -rp "Press Enter to close this window..."
