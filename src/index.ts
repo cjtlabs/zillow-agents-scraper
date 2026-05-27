@@ -7,6 +7,7 @@ import { Deduplicator } from "./utils/dedup.js";
 
 const DEFAULT_CITIES = ["los-angeles-ca"];
 const OUTPUT_PATH = "output/agents.json";
+const CSV_PATH = "output/agents.csv";
 
 function writeOutput(agents: ZillowAgent[], outputPath: string): void {
   const dir = path.dirname(outputPath);
@@ -14,6 +15,42 @@ function writeOutput(agents: ZillowAgent[], outputPath: string): void {
     fs.mkdirSync(dir, { recursive: true });
   }
   fs.writeFileSync(outputPath, JSON.stringify(agents, null, 2), "utf-8");
+}
+
+function writeCsv(agents: ZillowAgent[], csvPath: string): void {
+  const headers = [
+    "firstName",
+    "lastName",
+    "fullName",
+    "brokerage",
+    "zillowStars",
+    "reviewCount",
+    "salesLast12Months",
+    "totalTeamSales",
+    "minPrice",
+    "maxPrice",
+    "city",
+    "profileUrl",
+  ];
+
+  const escape = (val: string | number | undefined): string => {
+    if (val == null) return "";
+    const str = String(val);
+    if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  };
+
+  const rows = agents.map((a) =>
+    headers.map((h) => escape(a[h as keyof ZillowAgent])).join(",")
+  );
+
+  const dir = path.dirname(csvPath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(csvPath, [headers.join(","), ...rows].join("\n"), "utf-8");
 }
 
 /** Drop agents missing critical fields. */
@@ -58,8 +95,13 @@ async function scrapeCity(
 }
 
 async function main(): Promise<void> {
-  const args = process.argv.slice(2);
-  const cities = args.length > 0 ? args : DEFAULT_CITIES;
+  const rawArgs = process.argv.slice(2);
+  const csv = rawArgs.includes("--csv");
+  const cities = rawArgs.filter((a) => !a.startsWith("--"));
+
+  if (cities.length === 0) {
+    cities.push(...DEFAULT_CITIES);
+  }
 
   console.log(`[zillow-scraper] Starting — ${cities.length} city(ies): ${cities.join(", ")}`);
 
@@ -87,6 +129,11 @@ async function main(): Promise<void> {
 
   writeOutput(allAgents, OUTPUT_PATH);
   console.log(`[zillow-scraper] All done. ${allAgents.length} agents saved to ${OUTPUT_PATH}`);
+
+  if (csv) {
+    writeCsv(allAgents, CSV_PATH);
+    console.log(`[zillow-scraper] CSV saved to ${CSV_PATH}`);
+  }
 }
 
 main();

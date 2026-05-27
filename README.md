@@ -30,6 +30,9 @@ pnpm start
 
 # Multiple cities
 pnpm start los-angeles-ca beverly-hills-ca pasadena-ca burbank-ca
+
+# Also export as CSV
+pnpm start los-angeles-ca beverly-hills-ca --csv
 ```
 
 City format is `city-name-state` matching Zillow's URL pattern:
@@ -37,7 +40,7 @@ City format is `city-name-state` matching Zillow's URL pattern:
 
 ## Output
 
-All agents are saved to `output/agents.json` — a single file regardless of how many cities are scraped. After scraping, the data is validated and deduplicated across cities.
+All agents are saved to `output/agents.json` — a single file regardless of how many cities are scraped. After scraping, the data is validated and deduplicated across cities. Pass `--csv` to also generate `output/agents.csv`.
 
 Each agent record:
 
