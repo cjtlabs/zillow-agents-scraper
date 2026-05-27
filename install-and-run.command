@@ -89,4 +89,4 @@ echo "  pnpm start los-angeles-ca"
 echo ""
 
 cd "$INSTALL_DIR"
-exec $SHELL
+exec $SHELL -i </dev/tty
